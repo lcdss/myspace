@@ -1,0 +1,45 @@
+version: "3.6"
+
+services:
+  proxy:
+    image: jwilder/nginx-proxy:alpine
+    container_name: myspace-proxy
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  db:
+    image: postgres:alpine
+    container_name: myspace-db
+    environment:
+      POSTGRES_USER: myspace
+      POSTGRES_DB: myspace_dev
+      POSTGRES_PASSWORD: secret
+
+  api:
+    build:
+      context: ./
+    container_name: myspace-api
+    working_dir: /usr/src/app
+    expose:
+      - 8000
+    environment:
+      VIRTUAL_HOST: api.myspace.local
+    volumes:
+      - ./api:/usr/src/app
+    tty: true
+    stdin_open: true
+
+  client:
+    image: node:alpine
+    container_name: myspace-client
+    working_dir: /usr/src/app
+    expose:
+      - 3000
+    environment:
+      VIRTUAL_HOST: myspace.local
+    volumes:
+      - ./client:/usr/src/app
+    tty: true
+    stdin_open: true
