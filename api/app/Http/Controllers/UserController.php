@@ -2,37 +2,92 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\User as UserResource;
 
 class UserController extends Controller
 {
     public function index()
     {
-        // TODO: Implement index method
+        return new UserCollection(User::all());
     }
 
     public function show(int $id)
     {
-        // TODO: Implement show method
+        return new UserResource(User::findOrFail($id));
     }
 
     public function store(Request $request)
     {
-        // TODO: Implement store method
+        $data = $this->validate($request, [
+            'name' => ['required'],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')
+            ],
+            'cpf' => [
+                'required',
+                'cpf',
+                Rule::unique('users', 'cpf')
+            ],
+        ]);
+
+        $user = User::create($data);
+
+        return (new UserResource($user))
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function update(int $id, Request $request)
     {
-        // TODO: Implement update method
+        $user = User::findOrFail($id);
+
+        $data = $this->validate($request, [
+            'name' => ['sometimes', 'required'],
+            'email' => [
+                'sometimes',
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($id)
+            ],
+            'cpf' => [
+                'sometimes',
+                'required',
+                'cpf',
+                Rule::unique('users', 'cpf')->ignore($id)
+            ],
+        ]);
+
+        $user->update($data);
+
+        return new UserResource($user);
     }
 
     public function replaceAvatar(int $id, Request $request)
     {
-        // TODO: Implement replaceAvatar method
+        $user = User::findOrFail($id);
+
+        // TODO: Validate the file
+        $data = $this->validate($request, ['avatar' => ['required']]);
+
+        // TODO: Store the file
+        // TODO: Update the user's avatar column
+
+        return new UserResource($user);
     }
 
     public function destroy(int $id)
     {
-        // TODO: Implement destroy method
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }
