@@ -35,6 +35,7 @@ services:
     image: node:alpine
     container_name: myspace-client
     working_dir: /usr/src/app
+    user: node
     expose:
       - 3000
     environment:
