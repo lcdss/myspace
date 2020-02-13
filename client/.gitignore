@@ -11,6 +11,9 @@
 # production
 /build
 
+# typescript definitions
+react-app-env.d.ts
+
 # misc
 .DS_Store
 .env.local
