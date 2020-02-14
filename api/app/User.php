@@ -19,4 +19,35 @@ class User extends Model
      * @var array
      */
     protected $hidden = [];
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+            app('filesystem')->delete($user->avatar);
+        });
+    }
+
+    /**
+     * Generates the avatar URL and fallbacks to Gravatar if the avatar is not defined.
+     *
+     * @param integer $size
+     * @return string
+     */
+    public function avatarUrl(int $size = 80)
+    {
+        if ($this->avatar) {
+            return app('filesystem')->url($this->avatar);
+        }
+
+        $emailHash = md5($this->email);
+
+        return "https://www.gravatar.com/avatar/$emailHash?d=identicon&s=$size";
+    }
 }

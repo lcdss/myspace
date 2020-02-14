@@ -75,11 +75,21 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // TODO: Validate the file
-        $data = $this->validate($request, ['avatar' => ['required']]);
+        $this->validate($request, [
+            'avatar' => ['image', 'mimes:png,jpeg', 'max:1024'],
+        ]);
 
-        // TODO: Store the file
-        // TODO: Update the user's avatar column
+        if ($user->avatar) {
+            app('filesystem')->delete($user->avatar);
+        }
+
+        $path = null;
+
+        if ($request->avatar) {
+            $path = $request->avatar->store('avatars');
+        }
+
+        $user->update(['avatar' => $path]);
 
         return new UserResource($user);
     }
