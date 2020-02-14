@@ -6,14 +6,18 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
-use App\Http\Resources\User as UserResource;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return new UserCollection(User::all());
+        $perPage = $request->perPage ?? 10;
+
+        return new UserCollection(
+            User::orderByDesc('id')->paginate($perPage)
+        );
     }
 
     public function show(int $id)
@@ -28,20 +32,18 @@ class UserController extends Controller
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')
+                Rule::unique('users', 'email'),
             ],
             'cpf' => [
                 'required',
                 'cpf',
-                Rule::unique('users', 'cpf')
+                Rule::unique('users', 'cpf'),
             ],
         ]);
 
         $user = User::create($data);
 
-        return (new UserResource($user))
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        return new UserResource($user);
     }
 
     public function update(int $id, Request $request)
@@ -54,13 +56,13 @@ class UserController extends Controller
                 'sometimes',
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($id)
+                Rule::unique('users', 'email')->ignore($id),
             ],
             'cpf' => [
                 'sometimes',
                 'required',
                 'cpf',
-                Rule::unique('users', 'cpf')->ignore($id)
+                Rule::unique('users', 'cpf')->ignore($id),
             ],
         ]);
 

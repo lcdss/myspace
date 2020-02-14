@@ -11,5 +11,5 @@ class UserCollection extends ResourceCollection
      *
      * @var string
      */
-    public $collects = User::class;
+    public $collects = UserResource::class;
 }
