@@ -16,6 +16,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('users', 'UserController@index');
+$router->get('users/available', 'UserController@checkAvailability');
 $router->get('users/{id}', 'UserController@show');
 $router->post('users', 'UserController@store');
 $router->patch('users/{id}', 'UserController@update');
