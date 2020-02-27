@@ -33,7 +33,7 @@ const AvatarField: React.FC<AvatarFieldProps> = ({
       </IconButton>
 
       <input
-        accept="image/*"
+        accept="image/png,image/jpeg"
         style={{ display: 'none' }}
         name={name}
         type="file"

@@ -111,7 +111,7 @@ const UserList: React.FC<UserListProps> = ({
                 count={totalRows}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onChangePage={(event, page) => onPageChange(page)}
+                onChangePage={(_event, page) => onPageChange(page)}
                 onChangeRowsPerPage={e => onRowsPerPageChange(+e.target.value)}
               />
             </TableRow>

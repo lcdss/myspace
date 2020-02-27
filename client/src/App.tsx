@@ -47,6 +47,7 @@ const App = () => {
       if (totalRows > rowsPerPage) {
         fetchUsers();
       } else {
+        setUsers(users.filter(user => user.id !== id));
         setTotalRows(totalRows - 1);
       }
     });
@@ -54,7 +55,9 @@ const App = () => {
 
   const handleAddFormSubmit = (formData: UserFormData) => {
     createUser(formData).then(({ data: { data } }) => {
-      setUsers([data, ...users.slice(0, -1)]);
+      const endIndex = totalRows < rowsPerPage ? totalRows : -1;
+
+      setUsers([data, ...users.slice(0, endIndex)]);
       setTotalRows(totalRows + 1);
       setOpenAddForm(false);
     });
