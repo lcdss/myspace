@@ -21,4 +21,4 @@ $router->get('users/{id}', 'UserController@show');
 $router->post('users', 'UserController@store');
 $router->patch('users/{id}', 'UserController@update');
 $router->delete('users/{id}', 'UserController@destroy');
-$router->post('users/{id}/avatar', 'UserController@replaceAvatar');
+$router->post('users/{id}/avatar', 'UserController@updateAvatar');

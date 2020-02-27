@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\Rule;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UpdateAvatarRequest;
 
 class UserController extends Controller
 {
@@ -25,59 +27,25 @@ class UserController extends Controller
         return new UserResource(User::findOrFail($id));
     }
 
-    public function store(Request $request)
+    public function store(CreateUserRequest $request)
     {
-        $data = $this->validate($request, [
-            'name' => ['required'],
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users', 'email'),
-            ],
-            'cpf' => [
-                'required',
-                'cpf',
-                Rule::unique('users', 'cpf'),
-            ],
-        ]);
-
-        $user = User::create($data);
+        $user = User::create($request->all());
 
         return new UserResource($user);
     }
 
-    public function update(int $id, Request $request)
+    public function update(int $id, UpdateUserRequest $request)
     {
         $user = User::findOrFail($id);
 
-        $data = $this->validate($request, [
-            'name' => ['sometimes', 'required'],
-            'email' => [
-                'sometimes',
-                'required',
-                'email',
-                Rule::unique('users', 'email')->ignore($id),
-            ],
-            'cpf' => [
-                'sometimes',
-                'required',
-                'cpf',
-                Rule::unique('users', 'cpf')->ignore($id),
-            ],
-        ]);
-
-        $user->update($data);
+        $user->update($request->all());
 
         return new UserResource($user);
     }
 
-    public function replaceAvatar(int $id, Request $request)
+    public function updateAvatar(int $id, UpdateAvatarRequest $request)
     {
         $user = User::findOrFail($id);
-
-        $this->validate($request, [
-            'avatar' => ['image', 'mimes:png,jpeg', 'max:1024'],
-        ]);
 
         if ($user->avatar) {
             app('filesystem')->delete($user->avatar);
