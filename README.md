@@ -40,7 +40,12 @@ You will need have Docker and Docker Compose installed in your system to be able
   $ cp .env.example .env
   ```
 
-- Update the .env file with the S3 info and proper AWS credentials.
+- Create a symbolic link from public app storage to public directory
+
+  ```bash
+  $ ln -s $PWD/storage/app/public $PWD/public/storage
+  ```
+
 - Run the api server - It'll be available at http://api.myspace.local
 
   ```bash
@@ -75,6 +80,7 @@ You will need have Docker and Docker Compose installed in your system to be able
   ```bash
   $ echo "127.0.0.1 myspace.local" >> /etc/hosts
   $ echo "127.0.0.1 api.myspace.local" >> /etc/hosts
+  $ echo "127.0.0.1 cdn.myspace.local" >> /etc/hosts
   ```
 
 ## DEMO

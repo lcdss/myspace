@@ -40,7 +40,7 @@ class User extends Model
      * @param integer $size
      * @return string
      */
-    public function avatarUrl(int $size = 80)
+    public function avatarUrl()
     {
         if ($this->avatar) {
             return app('filesystem')->url($this->avatar);
@@ -48,6 +48,6 @@ class User extends Model
 
         $emailHash = md5($this->email);
 
-        return "https://www.gravatar.com/avatar/$emailHash?d=identicon&s=$size";
+        return "https://www.gravatar.com/avatar/$emailHash?d=identicon";
     }
 }
