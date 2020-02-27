@@ -22,3 +22,9 @@ $router->post('users', 'UserController@store');
 $router->patch('users/{id}', 'UserController@update');
 $router->delete('users/{id}', 'UserController@destroy');
 $router->post('users/{id}/avatar', 'UserController@updateAvatar');
+
+if (config('app.debug')) {
+    $router->get('/info', function () {
+        phpinfo();
+    });
+}
