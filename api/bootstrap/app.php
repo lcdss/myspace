@@ -60,6 +60,7 @@ $app->singleton(
 
 $app->middleware([
     App\Http\Middleware\Cors::class,
+    App\Http\Middleware\CheckHeaders::class,
 ]);
 
 // $app->routeMiddleware([
