@@ -25,7 +25,7 @@ services:
     expose:
       - 8000
     environment:
-      VIRTUAL_HOST: api.myspace.local
+      VIRTUAL_HOST: api.myspace.local,cdn.myspace.local
     volumes:
       - ./api:/usr/src/app
     tty: true
