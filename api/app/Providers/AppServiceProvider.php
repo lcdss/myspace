@@ -13,8 +13,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        validator()->extend('cpf', function ($attribute, $value) {
+        app('validator')->extend('cpf', function ($attribute, $value) {
             return is_valid_cpf($value);
+        });
+
+        app('validator')->extend('pwd', function ($attribute, $value) {
+            $passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s]).{8,}$/';
+
+            return preg_match($passwordRegex, $value) === 1;
         });
     }
 

@@ -19,6 +19,10 @@ class CreateUserRequest extends FormRequest
                 'max:100',
                 Rule::unique('users', 'email'),
             ],
+            'password' => [
+                'required',
+                'pwd'
+            ],
             'cpf' => [
                 'required',
                 'cpf',

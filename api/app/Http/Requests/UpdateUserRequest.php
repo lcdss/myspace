@@ -19,6 +19,7 @@ class UpdateUserRequest extends FormRequest
                 'max:100',
                 Rule::unique('users', 'email')->ignore($this->route('id')),
             ],
+            'password' => ['pwd'],
             'cpf' => [
                 'required',
                 'cpf',

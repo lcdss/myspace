@@ -10,6 +10,7 @@ return [
         'string' => 'The :attribute may not be greater than :max characters.',
     ],
     'mimes' => 'The :attribute must be a file of type: :values.',
+    'pwd' => 'The :attribute must contain at least 8 characters, including uppercase and lowercase letters, a number and one special character.',
     'required' => 'The :attribute field is required.',
     'unique' => 'The :attribute has already been taken.',
 

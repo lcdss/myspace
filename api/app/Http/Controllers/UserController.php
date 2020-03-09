@@ -64,9 +64,11 @@ class UserController extends Controller
 
     public function destroy(int $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
 
-        $user->delete();
+        if ($user) {
+            $user->delete();
+        }
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
@@ -74,18 +76,16 @@ class UserController extends Controller
     public function checkAvailability(Request $request)
     {
         $value = $request->value;
-        $isEmailOrCpf = false;
 
-        if (is_valid_cpf($value) || filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            $value = format_cpf($value);
-            $isEmailOrCpf = true;
+        if (!is_valid_cpf($value) && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            return response()->json(['available' => false]);
         }
 
-        $isAvailable = $isEmailOrCpf
-            ? !User::where('email', $value)
-                ->orWhere('cpf', $value)
-                ->exists()
-            : false;
+        $value = format_cpf($value);
+
+        $isAvailable = !User::where('email', $value)
+            ->orWhere('cpf', $value)
+            ->exists();
 
         return response()->json(['available' => $isAvailable]);
     }

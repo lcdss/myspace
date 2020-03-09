@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +19,21 @@ $factory->define(User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,
+        'password' => Hash::make('secret'),
         'cpf' => $faker->cpf,
     ];
+});
+
+$factory->afterCreating(User::class, function ($user) {
+    $emailHash = md5($user->email);
+    $url = "https://www.gravatar.com/avatar/$emailHash?d=robohash&s=512";
+
+    $filePath = sys_get_temp_dir() . '/' . $emailHash . '.png';
+    $fileContent = file_get_contents($url);
+    file_put_contents($filePath, $fileContent);
+    $file = new UploadedFile($filePath, $emailHash);
+
+    $path = $file->store('avatars');
+
+    $user->update(['avatar' => $path]);
 });
