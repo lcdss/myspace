@@ -1,3 +1,4 @@
+import * as yup from 'yup';
 import React, { useState } from 'react';
 import { useForm, OnSubmit } from 'react-hook-form';
 import TextField from '@material-ui/core/TextField';
@@ -31,7 +32,6 @@ const useStyles = makeStyles(theme => ({
 export default function UserForm({ id, user, onSubmit }: UserFormProps) {
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
-  const { register, errors, getValues, handleSubmit } = useForm<UserFormData>();
 
   const uniqueValidation = async (
     fieldName: 'cpf' | 'email',
@@ -53,6 +53,40 @@ export default function UserForm({ id, user, onSubmit }: UserFormProps) {
     return available;
   };
 
+  const formSchema = yup.object().shape({
+    name: yup
+      .string()
+      .required()
+      .max(100),
+    email: yup
+      .string()
+      .required()
+      .email()
+      .max(100)
+      .test('check-duplication', 'email is already taken', value =>
+        uniqueValidation('email', value),
+      ),
+    cpf: yup
+      .string()
+      .required()
+      .max(14)
+      .test('is-cpf', 'cpf is invalid', value => isCpf(value))
+      .test('check-duplication', 'cpf is already taken', value =>
+        uniqueValidation('cpf', value),
+      ),
+    password: yup
+      .string()
+      .min(8)
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s]).{8,}$/,
+        'password must include uppercase and lowercase letters, a number and one special character',
+      ),
+  });
+
+  const { register, errors, getValues, handleSubmit } = useForm<UserFormData>({
+    validationSchema: formSchema,
+  });
+
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} noValidate>
       <div style={{ textAlign: 'center' }}>
@@ -65,13 +99,7 @@ export default function UserForm({ id, user, onSubmit }: UserFormProps) {
       </div>
 
       <TextField
-        inputRef={register({
-          required: 'Please enter your name',
-          maxLength: {
-            value: 100,
-            message: 'The name is too long',
-          },
-        })}
+        inputRef={register}
         error={!!errors.name}
         helperText={errors.name?.message}
         defaultValue={user?.name}
@@ -82,20 +110,7 @@ export default function UserForm({ id, user, onSubmit }: UserFormProps) {
       />
 
       <TextField
-        inputRef={register({
-          required: 'Please enter your e-mail address',
-          maxLength: {
-            value: 100,
-            message: 'The e-mail address is too long',
-          },
-          pattern: {
-            value: /^[^\s]+@[^\s]+\.[^\s]+$/,
-            message: 'The e-mail address is invalid',
-          },
-          validate: async (value: string) =>
-            (await uniqueValidation('email', value)) ||
-            `The e-mail address has already been taken`,
-        })}
+        inputRef={register}
         className={classes.textField}
         error={!!errors.email}
         helperText={errors.email?.message}
@@ -107,15 +122,7 @@ export default function UserForm({ id, user, onSubmit }: UserFormProps) {
       />
 
       <TextField
-        inputRef={register({
-          required: 'Please enter your CPF',
-          validate: {
-            format: (value: string) => isCpf(value) || 'The CPF is invalid',
-            unique: async (value: string) =>
-              (await uniqueValidation('cpf', value)) ||
-              `The CPF has already been taken`,
-          },
-        })}
+        inputRef={register}
         className={classes.textField}
         error={!!errors.cpf}
         helperText={errors.cpf?.message}
@@ -145,14 +152,7 @@ export default function UserForm({ id, user, onSubmit }: UserFormProps) {
             </InputAdornment>
           }
           name="password"
-          inputRef={register({
-            ...(user?.id ? {} : { required: 'Please enter your password' }),
-            pattern: {
-              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s]).{8,}$/,
-              message:
-                'The password must contain at least 8 characters, including uppercase and lowercase letters, a number and one special character.',
-            },
-          })}
+          inputRef={register}
         />
         <FormHelperText>{errors.password?.message}</FormHelperText>
       </FormControl>
