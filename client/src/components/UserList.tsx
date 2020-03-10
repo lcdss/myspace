@@ -13,7 +13,7 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 
-import { User } from '../types';
+import { User } from '../model/users';
 
 interface UserListProps {
   items: User[];
@@ -40,7 +40,7 @@ const columns: Column[] = [
   { id: 'cpf', label: 'CPF', minWidth: 150 },
 ];
 
-const UserList: React.FC<UserListProps> = ({
+export default function UserList({
   items,
   page,
   rowsPerPage,
@@ -49,7 +49,7 @@ const UserList: React.FC<UserListProps> = ({
   onRowsPerPageChange,
   onEdit,
   onDelete,
-}) => {
+}: UserListProps) {
   return (
     <Paper elevation={2}>
       <TableContainer style={{ maxHeight: 920 }}>
@@ -120,6 +120,4 @@ const UserList: React.FC<UserListProps> = ({
       </TableContainer>
     </Paper>
   );
-};
-
-export default UserList;
+}

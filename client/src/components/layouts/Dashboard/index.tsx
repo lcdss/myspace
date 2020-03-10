@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Header from './Header';
 import Content from './Content';
 import Footer from './Footer';
+import { RouteComponentProps } from '@reach/router';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Layout: React.FC = ({ children }) => {
+const DashboardLayout: React.FC<RouteComponentProps> = ({ children }) => {
   const classes = useStyles();
 
   return (
@@ -25,4 +26,4 @@ const Layout: React.FC = ({ children }) => {
   );
 };
 
-export default Layout;
+export default DashboardLayout;

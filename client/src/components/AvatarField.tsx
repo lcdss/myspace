@@ -10,12 +10,12 @@ interface AvatarFieldProps {
   register: ReturnType<typeof useForm>['register'];
 }
 
-const AvatarField: React.FC<AvatarFieldProps> = ({
+export default function AvatarField({
   src,
   name,
   size,
   register,
-}) => {
+}: AvatarFieldProps) {
   const inputRef = useRef<HTMLInputElement>();
   const avatarRef = useRef<HTMLImageElement>(null);
 
@@ -25,7 +25,7 @@ const AvatarField: React.FC<AvatarFieldProps> = ({
         <Avatar style={{ width: size, height: size }}>
           <img
             ref={avatarRef}
-            src={src ?? `https://www.gravatar.com/avatar?s=${size}`}
+            src={src ?? `https://www.gravatar.com/avatar?d=mp&s=${size}`}
             style={{ width: size, height: size }}
             alt="avatar"
           />
@@ -62,6 +62,4 @@ const AvatarField: React.FC<AvatarFieldProps> = ({
       />
     </>
   );
-};
-
-export default AvatarField;
+}

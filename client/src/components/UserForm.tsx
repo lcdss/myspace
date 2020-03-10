@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, OnSubmit } from 'react-hook-form';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import { isCpf } from '../utils';
-import { userAvailable } from '../api';
+import { available as userAvailable, UserFormData } from '../services/users';
 import AvatarField from './AvatarField';
-import { User, UserFormData } from '../types';
+import { User } from '../model/users';
 
 interface UserFormProps {
   id: string;
@@ -20,8 +28,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const UserForm: React.FC<UserFormProps> = ({ id, user, onSubmit }) => {
+export default function UserForm({ id, user, onSubmit }: UserFormProps) {
   const classes = useStyles();
+  const [showPassword, setShowPassword] = useState(false);
   const { register, errors, getValues, handleSubmit } = useForm<UserFormData>();
 
   const uniqueValidation = async (
@@ -83,7 +92,7 @@ const UserForm: React.FC<UserFormProps> = ({ id, user, onSubmit }) => {
             value: /^[^\s]+@[^\s]+\.[^\s]+$/,
             message: 'The e-mail address is invalid',
           },
-          validate: async value =>
+          validate: async (value: string) =>
             (await uniqueValidation('email', value)) ||
             `The e-mail address has already been taken`,
         })}
@@ -101,8 +110,8 @@ const UserForm: React.FC<UserFormProps> = ({ id, user, onSubmit }) => {
         inputRef={register({
           required: 'Please enter your CPF',
           validate: {
-            format: value => isCpf(value) || 'The CPF is invalid',
-            unique: async value =>
+            format: (value: string) => isCpf(value) || 'The CPF is invalid',
+            unique: async (value: string) =>
               (await uniqueValidation('cpf', value)) ||
               `The CPF has already been taken`,
           },
@@ -116,8 +125,37 @@ const UserForm: React.FC<UserFormProps> = ({ id, user, onSubmit }) => {
         placeholder="000.000.000-00"
         fullWidth
       />
+
+      <FormControl
+        className={classes.textField}
+        error={!!errors.password}
+        fullWidth
+      >
+        <InputLabel>Password</InputLabel>
+        <Input
+          type={showPassword ? 'text' : 'password'}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </InputAdornment>
+          }
+          name="password"
+          inputRef={register({
+            ...(user?.id ? {} : { required: 'Please enter your password' }),
+            pattern: {
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s]).{8,}$/,
+              message:
+                'The password must contain at least 8 characters, including uppercase and lowercase letters, a number and one special character.',
+            },
+          })}
+        />
+        <FormHelperText>{errors.password?.message}</FormHelperText>
+      </FormControl>
     </form>
   );
-};
-
-export default UserForm;
+}

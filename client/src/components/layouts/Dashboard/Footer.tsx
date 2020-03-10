@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Footer: React.FC = () => {
+export default function Footer() {
   const classes = useStyles();
 
   return (
@@ -30,6 +30,4 @@ const Footer: React.FC = () => {
       </Typography>
     </Box>
   );
-};
-
-export default Footer;
+}

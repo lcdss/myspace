@@ -1,13 +1,26 @@
-import { AxiosResponse } from 'axios';
-
-import {
-  UserResponse,
-  UsersResponse,
-  UserAvailableResponse,
-  UserFormData,
-} from '../types';
+import { Links, Meta } from '../types';
 import http from '../services/http';
 import { formatCpf } from '../utils';
+import { User } from '../model/users';
+
+export interface UsersResponse {
+  data: User[];
+  links: Links;
+  meta: Meta;
+}
+
+export interface UserResponse {
+  data: User;
+}
+
+export interface UserAvailableResponse {
+  available: boolean;
+}
+
+export type UserFormData = Omit<User, 'id' | 'avatar'> & {
+  password?: string;
+  avatar: FileList;
+};
 
 const uploadAvatar = ({ id, file }: { id: number; file: File }) => {
   const formData = new FormData();
@@ -19,22 +32,16 @@ const uploadAvatar = ({ id, file }: { id: number; file: File }) => {
   });
 };
 
-export const allUsers = ({ page = 0, perPage = 10 }) => {
+export const fetchAll = ({ page = 0, perPage = 10 }) => {
   return http.get<UsersResponse>('users', {
     params: { page, perPage },
   });
 };
 
-export const createUser = async ({
-  name,
-  email,
-  cpf,
-  avatar,
-}: UserFormData) => {
+export const create = async ({ cpf, avatar, ...others }: UserFormData) => {
   const file = avatar.item(0);
   const createPromise = http.post<UserResponse>('users', {
-    name,
-    email,
+    ...others,
     cpf: formatCpf(cpf),
   });
 
@@ -46,12 +53,12 @@ export const createUser = async ({
     data: {
       data: { id },
     },
-  }: AxiosResponse<UserResponse> = await createPromise;
+  } = await createPromise;
 
   return uploadAvatar({ id, file });
 };
 
-export const updateUser = async ({
+export const update = async ({
   id,
   formData: { name, email, cpf, avatar },
 }: {
@@ -74,11 +81,11 @@ export const updateUser = async ({
   return uploadAvatar({ id, file });
 };
 
-export const deleteUser = ({ id }: { id: number }) => {
+export const destroy = ({ id }: { id: number }) => {
   return http.delete(`users/${id}`);
 };
 
-export const userAvailable = ({ value }: { value: string }) => {
+export const available = ({ value }: { value: string }) => {
   return http.get<UserAvailableResponse>('users/available', {
     params: { value },
   });

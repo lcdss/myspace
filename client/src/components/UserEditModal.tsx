@@ -7,21 +7,22 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import UserForm from './UserForm';
-import { User, UserFormData } from '../types';
+import { User } from '../model/users';
+import { UserFormData } from '../services/users';
 
-interface UserEditModalProps {
+type UserEditModalProps = {
   user: User;
   open: boolean;
   onClose: () => void;
   onSubmit: OnSubmit<UserFormData>;
-}
+};
 
-const UserEditModal: React.FC<UserEditModalProps> = ({
+export default function UserEditModal({
   user,
   open,
   onClose,
   onSubmit,
-}) => {
+}: UserEditModalProps) {
   return (
     <Dialog
       maxWidth="md"
@@ -45,6 +46,4 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
       </DialogActions>
     </Dialog>
   );
-};
-
-export default UserEditModal;
+}
