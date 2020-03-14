@@ -16,11 +16,16 @@ use Illuminate\Support\Facades\Hash;
 */
 
 $factory->define(User::class, function (Faker\Generator $faker) {
+    $createdAt = $faker->dateTimeBetween('-3 months');
+
     return [
         'name' => $faker->name,
         'email' => $faker->email,
         'password' => Hash::make('secret'),
         'cpf' => $faker->cpf,
+        'points' => $faker->numberBetween(0, 100),
+        'created_at' => $createdAt,
+        'updated_at' => $faker->dateTimeBetween($createdAt),
     ];
 });
 

@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Header from './Header';
 import Content from './Content';
 import Footer from './Footer';
 import { RouteComponentProps } from '@reach/router';
+
+interface DashBoardLayoutProps extends RouteComponentProps {
+  children: ReactNode;
+}
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -14,7 +18,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const DashboardLayout: React.FC<RouteComponentProps> = ({ children }) => {
+const DashboardLayout = ({ children }: DashBoardLayoutProps) => {
   const classes = useStyles();
 
   return (

@@ -20,6 +20,8 @@ const userStub = {
   email: '',
   cpf: '',
   avatar: '',
+  points: 0,
+  createdAt: '',
 };
 
 const authModel: AuthModel = {

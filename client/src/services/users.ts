@@ -1,3 +1,5 @@
+import qs from 'qs';
+
 import { Links, Meta } from '../types';
 import http from '../services/http';
 import { formatCpf } from '../utils';
@@ -17,9 +19,11 @@ export interface UserAvailableResponse {
   available: boolean;
 }
 
-export type UserFormData = Omit<User, 'id' | 'avatar'> & {
+export type UserFormData = Partial<
+  Omit<User, 'id' | 'avatar' | 'createdAt'>
+> & {
+  avatar?: FileList;
   password?: string;
-  avatar: FileList;
 };
 
 const uploadAvatar = ({ id, file }: { id: number; file: File }) => {
@@ -32,17 +36,20 @@ const uploadAvatar = ({ id, file }: { id: number; file: File }) => {
   });
 };
 
-export const fetchAll = ({ page = 0, perPage = 10 }) => {
+export const fetchAll = ({ page = 0, perPage = 10, ...rest }) => {
   return http.get<UsersResponse>('users', {
-    params: { page, perPage },
+    params: { page, perPage, ...rest },
+    paramsSerializer: params => {
+      return qs.stringify(params);
+    },
   });
 };
 
 export const create = async ({ cpf, avatar, ...others }: UserFormData) => {
-  const file = avatar.item(0);
+  const file = avatar?.item(0);
   const createPromise = http.post<UserResponse>('users', {
     ...others,
-    cpf: formatCpf(cpf),
+    ...(cpf ? { cpf: formatCpf(cpf) } : {}),
   });
 
   if (!file) {
@@ -60,16 +67,15 @@ export const create = async ({ cpf, avatar, ...others }: UserFormData) => {
 
 export const update = async ({
   id,
-  formData: { name, email, cpf, avatar },
+  formData: { cpf, avatar, ...others },
 }: {
   id: number;
   formData: UserFormData;
 }) => {
-  const file = avatar.item(0);
+  const file = avatar?.item(0);
   const updatePromise = http.patch<UserResponse>(`users/${id}`, {
-    name,
-    email,
-    cpf: formatCpf(cpf),
+    ...(cpf ? { cpf: formatCpf(cpf) } : {}),
+    ...others,
   });
 
   if (!file) {

@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Container from '@material-ui/core/Container';
 import { RouteComponentProps } from '@reach/router';
 
-const GuestLayout: React.FC<RouteComponentProps> = ({ children }) => {
+interface GuestLayoutProps extends RouteComponentProps {
+  children: ReactNode;
+}
+
+const GuestLayout = ({ children }: GuestLayoutProps) => {
   return (
     <Container component="main" maxWidth="xs">
       {children}

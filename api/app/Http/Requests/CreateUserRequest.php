@@ -28,6 +28,7 @@ class CreateUserRequest extends FormRequest
                 'cpf',
                 Rule::unique('users', 'cpf'),
             ],
+            'points' => ['integer'],
         ];
     }
 }

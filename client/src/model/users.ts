@@ -19,21 +19,29 @@ export interface User {
   cpf: string;
   email: string;
   avatar: string;
+  points: number;
+  createdAt: string;
 }
 
 export interface UsersModel {
   loading: boolean;
   items: User[];
-  currentUser?: User;
   pagination: Pagination;
   setItems: Action<UsersModel, User[]>;
   setLoading: Action<UsersModel, boolean>;
   setPagination: Action<UsersModel, Pagination>;
-  setCurrentUser: Action<UsersModel, User>;
   add: Action<UsersModel, User>;
   edit: Action<UsersModel, User>;
   remove: Action<UsersModel, number>;
-  fetchItems: Thunk<UsersModel, { page: number; perPage: number }>;
+  fetchItems: Thunk<
+    UsersModel,
+    {
+      page?: number;
+      perPage?: number;
+      search?: string;
+      filter?: { [K in keyof User]?: string };
+    }
+  >;
   create: Thunk<UsersModel, UserFormData>;
   update: Thunk<UsersModel, { id: number; formData: UserFormData }>;
   destroy: Thunk<UsersModel, { id: number }>;
@@ -55,9 +63,6 @@ const usersModel: UsersModel = {
   }),
   setPagination: action((state, pagination) => {
     state.pagination = pagination;
-  }),
-  setCurrentUser: action((state, user) => {
-    state.currentUser = user;
   }),
   add: action((state, user) => {
     const { total, perPage } = state.pagination;
@@ -83,12 +88,12 @@ const usersModel: UsersModel = {
       } = await fetchAll(params);
       const { current_page: page, per_page: perPage, total } = meta;
 
-      actions.setItems(users);
       actions.setPagination({
         page: page - 1,
         perPage: Number(perPage),
         total,
       });
+      actions.setItems(users);
       actions.setLoading(false);
     } catch (error) {
       actions.setLoading(false);
@@ -113,7 +118,6 @@ const usersModel: UsersModel = {
       } = await update({ id, formData });
 
       actions.edit(user);
-      actions.setCurrentUser(user);
     } catch (error) {
       throw new Error(error);
     }

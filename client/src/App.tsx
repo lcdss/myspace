@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactNode } from 'react';
 import { navigate, useMatch, RouteComponentProps } from '@reach/router';
 import { useStoreActions } from './hooks';
 
-const App: React.FC<RouteComponentProps> = ({ children }) => {
+interface AppProps extends RouteComponentProps {
+  children: ReactNode;
+}
+
+const App = ({ children }: AppProps) => {
   const [loading, setLoading] = useState(true);
   const loadAuth = useStoreActions(actions => actions.auth.loadAuth);
   const matchAuth = useMatch('auth/*');

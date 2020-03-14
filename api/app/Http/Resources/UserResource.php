@@ -20,6 +20,8 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'cpf' => $this->cpf,
             'avatar' => $this->avatarUrl(),
+            'points' => $this->points,
+            'createdAt' => $this->created_at,
         ];
     }
 }

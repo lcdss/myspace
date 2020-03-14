@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { RouteComponentProps, Link } from '@reach/router';
 
-const NotFoundPage: React.FC<RouteComponentProps> = () => {
+type NotFoundPageProps = (props: RouteComponentProps) => ReactElement;
+
+const NotFoundPage: NotFoundPageProps = () => {
   return (
     <>
       <h1>The page you are looking for doesn't exist</h1>

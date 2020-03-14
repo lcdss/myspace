@@ -15,11 +15,25 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = $request->perPage ?? 10;
+        $term = $request->search;
+        $perPage = (int) $request->perPage ?? 10;
+        $filters = $request->filter;
 
-        return new UserCollection(
-            User::orderByDesc('id')->paginate($perPage)
-        );
+        $users = User::orderByDesc('id')
+            ->when($filters, function ($query, $filters) {
+                foreach ($filters as $name => $value) {
+                    $query->where($name, 'ilike', "%{$value}%");
+                }
+            })
+            ->when($term, function ($query, $term) {
+                $query->where(function ($query) use ($term) {
+                    $query->where('name', 'ilike', "%{$term}%")
+                        ->orWhere('email', 'ilike', "%{$term}%")
+                        ->orWhere('cpf', 'ilike', "%{$term}%");
+                });
+            });
+
+        return new UserCollection($users->paginate($perPage));
     }
 
     public function show(int $id)

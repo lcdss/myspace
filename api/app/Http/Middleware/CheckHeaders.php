@@ -13,12 +13,11 @@ class CheckHeaders
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
-        if (!$request->wantsJson()) {
+        if (!$request->wantsJson() && $request->path() !== 'info') {
             throw new BadRequestHttpException('Accept header should be present and match the requirements.');
         }
 

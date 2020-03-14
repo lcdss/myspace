@@ -7,7 +7,8 @@ interface AvatarFieldProps {
   src?: string;
   name: string;
   size: number;
-  register: ReturnType<typeof useForm>['register'];
+  register?: ReturnType<typeof useForm>['register'];
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function AvatarField({
@@ -15,6 +16,7 @@ export default function AvatarField({
   name,
   size,
   register,
+  onChange,
 }: AvatarFieldProps) {
   const inputRef = useRef<HTMLInputElement>();
   const avatarRef = useRef<HTMLImageElement>(null);
@@ -51,13 +53,15 @@ export default function AvatarField({
 
             reader.readAsDataURL(file);
           }
+
+          onChange?.(event);
         }}
         ref={el => {
           if (el) {
             inputRef.current = el;
           }
 
-          register(el);
+          register?.(el);
         }}
       />
     </>

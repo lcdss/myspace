@@ -22,6 +22,7 @@ class User extends Model implements AuthenticatableContract, JWTSubject
         'password',
         'avatar',
         'cpf',
+        'points',
     ];
 
     /**

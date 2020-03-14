@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useForm } from 'react-hook-form';
 import { RouteComponentProps, useNavigate } from '@reach/router';
 
@@ -11,10 +11,12 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import { useStoreActions } from '../../hooks';
 
-type LoginForm = {
+interface LoginForm {
   email: string;
   password: string;
-};
+}
+
+type LoginPageProps = (props: RouteComponentProps) => ReactElement;
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -35,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const LoginPage: React.FC<RouteComponentProps> = () => {
+const LoginPage: LoginPageProps = () => {
   const classes = useStyles();
   const { register, errors, handleSubmit } = useForm<LoginForm>();
   const navigate = useNavigate();
