@@ -11,6 +11,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import InputMask from 'react-input-mask';
 
 import { isCpf } from '../utils';
 import { available as userAvailable, UserFormData } from '../services/users';
@@ -32,6 +33,7 @@ const useStyles = makeStyles(theme => ({
 export default function UserForm({ id, user, onSubmit }: UserFormProps) {
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
+  const [cpf, setCpf] = useState('');
 
   const uniqueValidation = async (
     fieldName: 'cpf' | 'email',
@@ -69,7 +71,6 @@ export default function UserForm({ id, user, onSubmit }: UserFormProps) {
     cpf: yup
       .string()
       .required()
-      .max(14)
       .test('is-cpf', 'cpf is invalid', value => isCpf(value))
       .test('check-duplication', 'cpf is already taken', value =>
         uniqueValidation('cpf', value),
@@ -121,17 +122,22 @@ export default function UserForm({ id, user, onSubmit }: UserFormProps) {
         fullWidth
       />
 
-      <TextField
+      <InputMask
+        mask="999.999.999-99"
+        value={cpf}
         inputRef={register}
-        className={classes.textField}
-        error={!!errors.cpf}
-        helperText={errors.cpf?.message}
         defaultValue={user?.cpf}
         name="cpf"
-        label="CPF"
-        placeholder="000.000.000-00"
-        fullWidth
-      />
+        className={classes.textField}
+        onChange={e => setCpf(e.target.value)}
+      >
+        <TextField
+          helperText={errors.cpf?.message}
+          error={!!errors.cpf}
+          label="CPF"
+          fullWidth
+        />
+      </InputMask>
 
       <FormControl
         className={classes.textField}
