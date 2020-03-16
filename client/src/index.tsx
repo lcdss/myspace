@@ -13,6 +13,7 @@ import * as serviceWorker from './serviceWorker';
 import GuestLayout from './components/layouts/Guest';
 import DashboardLayout from './components/layouts/Dashboard';
 import LoginPage from './pages/auth/Login';
+import HomePage from './pages/dashboard/Home';
 import UsersPage from './pages/dashboard/Users';
 import NotFoundPage from './pages/errors/NotFound';
 
@@ -23,7 +24,8 @@ ReactDOM.render(
       <Router>
         <App path="/">
           <DashboardLayout path="/">
-            <UsersPage path="/" />
+            <HomePage path="/" />
+            <UsersPage path="/users" />
           </DashboardLayout>
           <GuestLayout path="auth">
             <LoginPage path="login" />

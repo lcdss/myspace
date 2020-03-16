@@ -5,6 +5,7 @@ import Header from './Header';
 import Content from './Content';
 import Footer from './Footer';
 import { RouteComponentProps } from '@reach/router';
+import Sidebar from './Sidebar';
 
 interface DashBoardLayoutProps extends RouteComponentProps {
   children: ReactNode;
@@ -24,6 +25,7 @@ const DashboardLayout = ({ children }: DashBoardLayoutProps) => {
   return (
     <div className={classes.root}>
       <Header />
+      <Sidebar />
       <Content>{children}</Content>
       <Footer />
     </div>

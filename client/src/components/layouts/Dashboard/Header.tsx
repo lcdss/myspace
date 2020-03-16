@@ -7,7 +7,13 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useStoreActions } from '../../../hooks/index';
 
+const drawerWidth = 240;
+
 const useStyles = makeStyles(theme => ({
+  appBar: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+  },
   title: {
     flexGrow: 1,
     textDecoration: 'none',
@@ -35,7 +41,7 @@ export default function Header() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" className={classes.appBar}>
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
           MySpace

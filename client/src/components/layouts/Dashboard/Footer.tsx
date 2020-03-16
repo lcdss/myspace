@@ -18,7 +18,7 @@ export default function Footer() {
 
   return (
     <Box className={classes.footer} component="footer">
-      <Typography variant="subtitle2" color="textPrimary">
+      <Typography variant="subtitle2" style={{ color: '#fff' }}>
         {'© Copyright 2020, '}
         <Link
           color="inherit"
